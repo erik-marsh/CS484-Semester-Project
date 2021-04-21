@@ -1,36 +1,40 @@
-﻿Shader "Flipping Normals" {
-    Properties{
+﻿Shader "Flipping Normals"
+{
+    Properties
+    {
         _MainTex("Base (RGB)", 2D) = "white" {}
     }
-        SubShader{
 
-            Tags { "RenderType" = "Opaque" }
+    SubShader
+    {
 
-            Cull Off
+        Tags { "RenderType" = "Opaque" }
 
-            CGPROGRAM
+        Cull Off
 
-            #pragma surface surf Lambert vertex:vert
-            sampler2D _MainTex;
+        CGPROGRAM
 
-            struct Input {
-                float2 uv_MainTex;
-                float4 color : COLOR;
-            };
+        #pragma surface surf Lambert vertex:vert
+        sampler2D _MainTex;
 
-            void vert(inout appdata_full v) {
-                v.normal.xyz = v.normal * -1;
-            }
+        struct Input {
+            float2 uv_MainTex;
+            float4 color : COLOR;
+        };
 
-            void surf(Input IN, inout SurfaceOutput o) {
-                 fixed3 result = tex2D(_MainTex, IN.uv_MainTex);
-                 o.Albedo = result.rgb;
-                 o.Alpha = 1;
-            }
+        void vert(inout appdata_full v) {
+            v.normal.xyz = v.normal * -1;
+        }
 
-            ENDCG
+        void surf(Input IN, inout SurfaceOutput o) {
+                fixed3 result = tex2D(_MainTex, IN.uv_MainTex);
+                o.Albedo = result.rgb;
+                o.Alpha = 1;
+        }
+
+        ENDCG
 
     }
 
-        Fallback "Diffuse"
+    Fallback "Diffuse"
 }
