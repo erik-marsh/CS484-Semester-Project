@@ -100,8 +100,11 @@ namespace Valve.VR.Extras
             float dist = 100f;
 
             Ray raycast = new Ray(transform.position, transform.forward);
+            //raycast.direction = -raycast.direction;
             RaycastHit hit;
             bool bHit = Physics.Raycast(raycast, out hit);
+
+            //Debug.Log(bHit); // raycasts only work on objects that are VISIBLE to the camera(s)
 
             if (previousContact && previousContact != hit.transform)
             {
@@ -110,6 +113,7 @@ namespace Valve.VR.Extras
                 args.distance = 0f;
                 args.flags = 0;
                 args.target = previousContact;
+                args.hitPoint = hit.point;
                 OnPointerOut(args);
                 previousContact = null;
             }
@@ -120,6 +124,7 @@ namespace Valve.VR.Extras
                 argsIn.distance = hit.distance;
                 argsIn.flags = 0;
                 argsIn.target = hit.transform;
+                argsIn.hitPoint = hit.point;
                 OnPointerIn(argsIn);
                 previousContact = hit.transform;
             }
@@ -138,7 +143,8 @@ namespace Valve.VR.Extras
                 argsClick.fromInputSource = pose.inputSource;
                 argsClick.distance = hit.distance;
                 argsClick.flags = 0;
-                argsClick.target = hit.transform;
+                argsClick.target = hit.transform; // this is the one that actually worked with my setup
+                argsClick.hitPoint = hit.point;
                 OnPointerClick(argsClick);
             }
 
@@ -162,6 +168,7 @@ namespace Valve.VR.Extras
         public uint flags;
         public float distance;
         public Transform target;
+        public Vector3 hitPoint;
     }
 
     public delegate void PointerEventHandler(object sender, PointerEventArgs e);
