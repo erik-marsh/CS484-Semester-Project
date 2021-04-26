@@ -9,15 +9,23 @@ using Valve.VR;
 
 public class PointerHandler : MonoBehaviour
 {
+    public GameObject barrierSphere;
+    public Material transparentSphereMaterial;
+    public Material opaqueSphereMaterial;
+
+    public GameObject visibilityCube;
+    public Vector3 visibilityCubeDormantPosition;
+
     public SteamVR_LaserPointer laserPointer;
-    public GameObject spawnSphere;
 
     public SteamVR_Action_Boolean positionVisibilityCube;
-    public SteamVR_Input_Sources handType;
+    public SteamVR_Input_Sources leftHand;
 
-    //private List<Vector3> viewportSquareVerts;
-    //private List<GameObject>
+    public SteamVR_Action_Boolean clearVisibilityCube;
+    public SteamVR_Input_Sources rightHand;
+
     private List<GameObject> viewportSquareVerts;
+    private Renderer barrierSphereRenderer;
 
     void Awake()
     {
@@ -25,10 +33,14 @@ public class PointerHandler : MonoBehaviour
         laserPointer.PointerOut += PointerOutside;
         laserPointer.PointerClick += PointerClick;
 
-        positionVisibilityCube.AddOnStateDownListener(GripButtonDown, handType);
+        positionVisibilityCube.AddOnStateDownListener(LeftGripButtonDown, leftHand);
+        clearVisibilityCube.AddOnStateDownListener(RightGripButtonDown, rightHand);
 
         //viewportSquareVerts = new List<Vector3>();
         viewportSquareVerts = new List<GameObject>();
+        barrierSphereRenderer = barrierSphere.GetComponent<Renderer>();
+
+        barrierSphereRenderer.material = transparentSphereMaterial;
     }
 
     void AddViewportVert(Vector3 pos)
@@ -96,26 +108,18 @@ public class PointerHandler : MonoBehaviour
         //}
     }
 
-    public void GripButtonDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    public void LeftGripButtonDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
         if (viewportSquareVerts.Count < 4) return;
 
-        int len = viewportSquareVerts.Count;
-        Vector3[] viewport = new Vector3[4];
-        for (int i = 0; i < 4; i++)
-        {
-            viewport[i] = viewportSquareVerts[len - 1 - i].transform.position;
-        }
-
         // calculate the centroid of these four points
+        int len = viewportSquareVerts.Count;
         Vector3 centroid = Vector3.zero;
         for (int i = 0; i < 4; i++)
         {
-            centroid += viewport[i];
+            centroid += viewportSquareVerts[len - 1 - i].transform.position;
         }
         centroid /= 4;
-
-        var viewportCube = GameObject.Find("VisibilityCube");
 
         float radius, polar, elevation;
         CartesianToSpherical(centroid, out radius, out polar, out elevation);
@@ -131,11 +135,25 @@ public class PointerHandler : MonoBehaviour
         // y = -90 - polar if polar < 0
         //     90 - polar if polar  > 0
         Vector3 eulers = new Vector3(elevation, -90 - polar, 0);
-        viewportCube.transform.localPosition = centroid;
-        viewportCube.transform.localEulerAngles = eulers;
+        visibilityCube.transform.localPosition = centroid;
+        visibilityCube.transform.localEulerAngles = eulers;
 
+        Color color = new Color(46, 46, 46, 255);
+        barrierSphereRenderer.material = opaqueSphereMaterial;
+    }
 
-        //Debug.Log("pretend a cube is created");
+    public void RightGripButtonDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        // remove all spheres and re-enable transparancy
+        for (int i = 0; i < viewportSquareVerts.Count; i++)
+        {
+            GameObject.Destroy(viewportSquareVerts[i]);
+            viewportSquareVerts[i] = null;
+        }
+        viewportSquareVerts.Clear();
+
+        barrierSphereRenderer.material = transparentSphereMaterial;
+        visibilityCube.transform.position = visibilityCubeDormantPosition;
     }
 
     // from https://blog.nobel-joergensen.com/2010/10/22/spherical-coordinates-in-unity/
