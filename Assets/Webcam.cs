@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Webcam : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public string webcamName;
+
     void Start()
     {
         var devices = WebCamTexture.devices;
@@ -15,14 +16,8 @@ public class Webcam : MonoBehaviour
 
         Renderer rend = this.GetComponentInChildren<Renderer>();
 
-        WebCamTexture tex = new WebCamTexture("e2eSoft iVCam");
+        WebCamTexture tex = new WebCamTexture(webcamName);
         rend.material.mainTexture = tex;
         tex.Play();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

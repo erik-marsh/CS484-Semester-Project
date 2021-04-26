@@ -15,7 +15,9 @@ public class PointerHandler : MonoBehaviour
     public SteamVR_Action_Boolean positionVisibilityCube;
     public SteamVR_Input_Sources handType;
 
-    private List<Vector3> viewportSquareVerts;
+    //private List<Vector3> viewportSquareVerts;
+    //private List<GameObject>
+    private List<GameObject> viewportSquareVerts;
 
     void Awake()
     {
@@ -25,7 +27,32 @@ public class PointerHandler : MonoBehaviour
 
         positionVisibilityCube.AddOnStateDownListener(GripButtonDown, handType);
 
-        viewportSquareVerts = new List<Vector3>();
+        //viewportSquareVerts = new List<Vector3>();
+        viewportSquareVerts = new List<GameObject>();
+    }
+
+    void AddViewportVert(Vector3 pos)
+    {
+        var newPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        newPoint.transform.position = pos;
+
+        viewportSquareVerts.Add(newPoint);
+
+        // count assumed to be 5
+        Debug.Log(viewportSquareVerts.Count);
+        if (viewportSquareVerts.Count > 4)
+        {
+            GameObject.Destroy(viewportSquareVerts[0]);
+            viewportSquareVerts[0] = null;
+
+            for (int i = 0; i < 4; i++)
+            {
+                viewportSquareVerts[i] = viewportSquareVerts[i + 1];
+            }
+
+            viewportSquareVerts[4] = null;
+            viewportSquareVerts.RemoveAt(4);
+        }
     }
 
     public void PointerClick(object sender, PointerEventArgs e)
@@ -35,8 +62,9 @@ public class PointerHandler : MonoBehaviour
         {
             Debug.Log("Cube was clicked");
             Debug.Log(e.hitPoint);
-            viewportSquareVerts.Add(e.hitPoint);
-            Instantiate(spawnSphere, e.hitPoint, Quaternion.identity);
+            //viewportSquareVerts.Add(e.hitPoint);
+            AddViewportVert(e.hitPoint);
+            //Instantiate(spawnSphere, e.hitPoint, Quaternion.identity);
         }
         else if (e.target.name == "Button")
         {
@@ -76,7 +104,7 @@ public class PointerHandler : MonoBehaviour
         Vector3[] viewport = new Vector3[4];
         for (int i = 0; i < 4; i++)
         {
-            viewport[i] = viewportSquareVerts[len - 1 - i];
+            viewport[i] = viewportSquareVerts[len - 1 - i].transform.position;
         }
 
         // calculate the centroid of these four points
@@ -87,29 +115,16 @@ public class PointerHandler : MonoBehaviour
         }
         centroid /= 4;
 
-        // project centroid onto BarrierSphere
-        // BarrierSphere will be located at (0,0,0), making this trivial
-        //centroid.Normalize();
-        //centroid *= 
-
-        //Instantiate(spawnSphere, centroid, Quaternion.identity);
         var viewportCube = GameObject.Find("VisibilityCube");
-        //viewportCube.transform.localPosition = centroid;
 
         float radius, polar, elevation;
         CartesianToSpherical(centroid, out radius, out polar, out elevation);
         polar *= Mathf.Rad2Deg;
         elevation *= Mathf.Rad2Deg;
 
-        Debug.Log("radius: " + radius);
-        Debug.Log("polar: " + polar);
-        Debug.Log("elevation: " + elevation);
-
-        // barrier is a sphere, not an arbitrary ellipsoid
-        float barrierSphereRadius = GameObject.Find("BarrierSphere").transform.localScale.x / 2;
-
-        Vector3 centroidSphereProjection = new Vector3();
-        SphericalToCartesian(barrierSphereRadius, Mathf.Deg2Rad * polar, Mathf.Deg2Rad * elevation, out centroidSphereProjection);
+        //Debug.Log("radius: " + radius);
+        //Debug.Log("polar: " + polar);
+        //Debug.Log("elevation: " + elevation);
 
         //possible rotation
         // x = elevation
@@ -137,11 +152,11 @@ public class PointerHandler : MonoBehaviour
         outElevation = Mathf.Asin(cartCoords.y / outRadius);
     }
 
-    public static void SphericalToCartesian(float radius, float polar, float elevation, out Vector3 outCart)
-    {
-        float a = radius * Mathf.Cos(elevation);
-        outCart.x = a * Mathf.Cos(polar);
-        outCart.y = radius * Mathf.Sin(elevation);
-        outCart.z = a * Mathf.Sin(polar);
-    }
+    //public static void SphericalToCartesian(float radius, float polar, float elevation, out Vector3 outCart)
+    //{
+    //    float a = radius * Mathf.Cos(elevation);
+    //    outCart.x = a * Mathf.Cos(polar);
+    //    outCart.y = radius * Mathf.Sin(elevation);
+    //    outCart.z = a * Mathf.Sin(polar);
+    //}
 }
