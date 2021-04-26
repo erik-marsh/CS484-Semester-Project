@@ -85,6 +85,10 @@
     {
       "name": "/actions/SphereFunctions/in/SetPoint",
       "type": "boolean"
+    },
+    {
+      "name": "/actions/SphereFunctions/in/SetVisibilityCube",
+      "type": "boolean"
     }
   ],
   "action_sets": [

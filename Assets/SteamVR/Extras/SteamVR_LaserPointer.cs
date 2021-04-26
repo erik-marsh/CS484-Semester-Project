@@ -1,4 +1,6 @@
 ﻿//======= Copyright (c) Valve Corporation, All rights reserved. ===============
+
+// modified to output raycast hit point by Erik Marsh on 4/23/2021
 using UnityEngine;
 using System.Collections;
 

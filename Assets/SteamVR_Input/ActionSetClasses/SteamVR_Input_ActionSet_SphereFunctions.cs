@@ -24,5 +24,13 @@ namespace Valve.VR
                 return SteamVR_Actions.sphereFunctions_SetPoint;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean SetVisibilityCube
+        {
+            get
+            {
+                return SteamVR_Actions.sphereFunctions_SetVisibilityCube;
+            }
+        }
     }
 }
