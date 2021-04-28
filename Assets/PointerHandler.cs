@@ -73,13 +73,32 @@ public class PointerHandler : MonoBehaviour
         {
             Debug.Log("Cube was clicked");
             Debug.Log(e.hitPoint);
-            //viewportSquareVerts.Add(e.hitPoint);
             AddViewportVert(e.hitPoint);
-            //Instantiate(spawnSphere, e.hitPoint, Quaternion.identity);
         }
-        else if (e.target.name == "Button")
+        else if (e.target.name == "InstructionButton")
         {
-            Debug.Log("Button was clicked");
+            Debug.Log("InstructionButton was clicked");
+            UIMgr.inst.ChangeUIState(UIState.INSTRUCTIONS);
+        }
+        else if (e.target.name == "StartButton")
+        {
+            Debug.Log("StartButton was clicked");
+            UIMgr.inst.ChangeUIState(UIState.USER);
+        }
+        else if (e.target.name == "MainMenuExitButton")
+        {
+            Debug.Log("MainMenuExitButton was clicked");
+            Utils.ExitUnity();
+        }
+        else if (e.target.name == "InstructionsExitButton")
+        {
+            Debug.Log("InstructionsExitButton was clicked");
+            UIMgr.inst.ChangeUIState(UIState.MAIN_MENU);
+        }
+        else if (e.target.name == "UserExitButton")
+        {
+            Debug.Log("UserExitButton was clicked");
+            Utils.ExitUnity();
         }
     }
 
@@ -93,6 +112,10 @@ public class PointerHandler : MonoBehaviour
         //{
         //    Debug.Log("Button was entered");
         //}
+        if (e.target.name == "UserUI")
+		{
+            Debug.Log("Fading in UserUI");
+		}
     }
 
     public void PointerOutside(object sender, PointerEventArgs e)
