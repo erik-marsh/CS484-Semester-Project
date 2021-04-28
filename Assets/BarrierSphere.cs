@@ -6,6 +6,9 @@ public class BarrierSphere : MonoBehaviour
 {
 	public GameObject barrierSphere;
 
+	private Material currMaterial;
+	private Material targetMaterial;
+
 	private void Awake()
 	{
 		// invert sphere normals so we can texture the inside
@@ -15,5 +18,15 @@ public class BarrierSphere : MonoBehaviour
 			normals[i] = -normals[i];
 		}
 		barrierSphere.GetComponent<MeshFilter>().mesh.normals = normals;
+	}
+
+	private void Update()
+	{
+		
+	}
+
+	public void ChangeMaterial(Material targetMaterial, float fadeTime)
+	{
+
 	}
 }

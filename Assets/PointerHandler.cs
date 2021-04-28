@@ -36,7 +36,6 @@ public class PointerHandler : MonoBehaviour
         positionVisibilityCube.AddOnStateDownListener(LeftGripButtonDown, leftHand);
         clearVisibilityCube.AddOnStateDownListener(RightGripButtonDown, rightHand);
 
-        //viewportSquareVerts = new List<Vector3>();
         viewportSquareVerts = new List<GameObject>();
         barrierSphereRenderer = barrierSphere.GetComponent<Renderer>();
 
