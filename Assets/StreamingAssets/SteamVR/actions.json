@@ -89,6 +89,10 @@
     {
       "name": "/actions/SphereFunctions/in/SetVisibilityCube",
       "type": "boolean"
+    },
+    {
+      "name": "/actions/SphereFunctions/in/ClearVisibilityCube",
+      "type": "boolean"
     }
   ],
   "action_sets": [

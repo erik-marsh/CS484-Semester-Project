@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Webcam : MonoBehaviour
 {
-    public string webcamName;
-
     void Start()
     {
         var devices = WebCamTexture.devices;
@@ -13,6 +11,8 @@ public class Webcam : MonoBehaviour
 		{
             Debug.Log(d.name);
 		}
+
+        string webcamName = devices[0].name;
 
         Renderer rend = this.GetComponentInChildren<Renderer>();
 
