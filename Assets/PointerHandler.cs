@@ -8,6 +8,8 @@ using Valve.VR;
 
 public class PointerHandler : MonoBehaviour
 {
+    public static PointerHandler inst;
+
     public GameObject barrierSphere;
     public Material transparentSphereMaterial;
     public Material opaqueSphereMaterial;
@@ -24,11 +26,19 @@ public class PointerHandler : MonoBehaviour
     public SteamVR_Action_Boolean togglePointerLasersRight;
     public SteamVR_Input_Sources controller;
 
-    private List<GameObject> viewportSquareVerts;
+    public List<GameObject> viewportSquareVerts;
     private Renderer barrierSphereRenderer;
+
+    private bool isFadingInSphere = false;
+    private bool isFadingOutSphere = false;
+    private float sphereFadeInTimer = 1.0f;
+    private float sphereFadeOutTimer = 1.0f;
+    public float sphereFadeLength = 1.0f;
 
     void Awake()
     {
+        inst = this;
+
         laserPointerLeft.PointerIn += PointerInside;
         laserPointerLeft.PointerOut += PointerOutside;
         laserPointerLeft.PointerClick += PointerClick;
@@ -45,7 +55,26 @@ public class PointerHandler : MonoBehaviour
         viewportSquareVerts = new List<GameObject>();
         barrierSphereRenderer = barrierSphere.GetComponent<Renderer>();
 
-        barrierSphereRenderer.material = transparentSphereMaterial;
+        //barrierSphereRenderer.material = transparentSphereMaterial;
+    }
+
+    private void Update()
+    {
+        // lerping wont work
+
+        //if (isFadingInSphere && sphereFadeInTimer < sphereFadeLength)
+        //{
+        //    Debug.Log("fading in");
+        //    sphereFadeInTimer += Time.deltaTime;
+        //    barrierSphereRenderer.material.Lerp(transparentSphereMaterial, opaqueSphereMaterial, sphereFadeInTimer / sphereFadeLength);
+        //}
+
+        //if (isFadingOutSphere && sphereFadeOutTimer < sphereFadeLength)
+        //{
+        //    Debug.Log("fading out");
+        //    sphereFadeOutTimer += Time.deltaTime;
+        //    barrierSphereRenderer.material.Lerp(opaqueSphereMaterial, transparentSphereMaterial, sphereFadeOutTimer / sphereFadeLength);
+        //}
     }
 
     void AddViewportVert(Vector3 pos)
@@ -156,45 +185,37 @@ public class PointerHandler : MonoBehaviour
         visibilityCube.transform.localPosition = centroid;
         visibilityCube.transform.localEulerAngles = eulers;
 
-        Color color = new Color(46, 46, 46, 255);
         barrierSphereRenderer.material = opaqueSphereMaterial;
+        //isFadingInSphere = true;
+        //isFadingOutSphere = false;
+        //sphereFadeInTimer = 0.0f;
     }
 
     public void TouchpadUpDownCenterPress(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
         // remove all spheres and re-enable transparancy
+        ClearVerts();
+
+        barrierSphereRenderer.material = transparentSphereMaterial;
+        //isFadingInSphere = false;
+        //isFadingOutSphere = true;
+        //sphereFadeOutTimer = 0.0f;
+        visibilityCube.transform.position = visibilityCubeDormantPosition;
+    }
+
+    public void ClearVerts()
+    {
         for (int i = 0; i < viewportSquareVerts.Count; i++)
         {
             GameObject.Destroy(viewportSquareVerts[i]);
             viewportSquareVerts[i] = null;
         }
         viewportSquareVerts.Clear();
-
-        barrierSphereRenderer.material = transparentSphereMaterial;
-        visibilityCube.transform.position = visibilityCubeDormantPosition;
     }
 
     public void TouchpadLeftRightPress(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        //Color newColor = laserPointerLeft.color;
-        //Color newClickColor = laserPointerLeft.clickColor;
 
-        //if (newColor.a.Equals(255.0f))
-        //{
-        //    newColor.a = 0.0f;
-        //    newClickColor.a = 0.0f;
-        //}
-        //else
-        //{
-        //    newColor.a = 255.0f;
-        //    newClickColor.a = 255.0f;
-        //}
-
-        //laserPointerLeft.color = newColor;
-        //laserPointerRight.color = newColor;
-
-        //laserPointerLeft.clickColor = newClickColor;
-        //laserPointerRight.clickColor = newClickColor;
     }
 
     // from https://blog.nobel-joergensen.com/2010/10/22/spherical-coordinates-in-unity/

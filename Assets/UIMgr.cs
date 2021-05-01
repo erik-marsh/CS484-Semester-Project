@@ -32,6 +32,10 @@ public class UIMgr : MonoBehaviour
 	public float transitionFadeLength = 1.0f;
 	private float currUserUIAlpha = 0.0f;
 
+	public Renderer barrierSphereRenderer;
+	public Material barrierSphereMaterialTransparent;
+	public Material barrierSphereMaterialOpaque;
+
 	private void Awake()
 	{
 		inst = this;
@@ -109,12 +113,18 @@ public class UIMgr : MonoBehaviour
             isFadingOutMainMenu = true;
             isFadingInMainMenu = false;
             mainMenuFadeOutTimer = 0.0f;
+
+			barrierSphereRenderer.material = barrierSphereMaterialTransparent;
         }
         else if (currState == UIState.USER && newState == UIState.MAIN_MENU)
         {
             isFadingOutMainMenu = false;
             isFadingInMainMenu = true;
             mainMenuFadeInTimer = 0.0f;
+
+			barrierSphereRenderer.material = barrierSphereMaterialOpaque;
+			PointerHandler.inst.visibilityCube.transform.position = PointerHandler.inst.visibilityCubeDormantPosition;
+			PointerHandler.inst.ClearVerts();
         }
 
         currState = newState;
