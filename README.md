@@ -2,12 +2,12 @@
 
 Created by Erik Marsh and Sean O'Kelly (Group 20)
 
-## Software and Hardware Dependenices
+## Software and Hardware Dependencies
 ### For the end user
 * HTC Vive or HTC Vive Pro
 * A USB webcam
   * To achieve the desired effect, the webcam must have an aspect ratio of 16:9.
-  * Additionaly, a webcam with a resolution of 1080p and a framerate of at least 30Hz (higher is better) is recommended.
+  * Additionally, a webcam with a resolution of 1080p and a framerate of at least 30Hz (higher is better) is recommended.
 * A USB extension cord is recommended.
 * Something to attach the webcam to the front of the headset with
   * Velcro strips, electrical tape, duct tape, etc
