@@ -114,6 +114,8 @@ public class UIMgr : MonoBehaviour
             isFadingInMainMenu = false;
             mainMenuFadeOutTimer = 0.0f;
 
+			timerStartTime = Time.time; // reset user mode timer
+
 			barrierSphereRenderer.material = barrierSphereMaterialTransparent;
         }
         else if (currState == UIState.USER && newState == UIState.MAIN_MENU)
